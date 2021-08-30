@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Contains the Custom Theme functions to manipulate Drupal's default markup.
+ */
+ 
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for pages.
+ */
+function custom_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  if ($node = \Drupal::routeMatch()->getParameter('node')) {
+    // Add template suggestion depending on the node type.
+    $node_type = $node->bundle();
+    $suggestions[] = 'page__' . $node_type;
+  }
+  elseif ($taxonomy = \Drupal::routeMatch()->getParameter('taxonomy_term')) {
+    // Add template suggestion depending on the taxonomy type.
+    $taxonomy_vocabulary = $taxonomy->bundle();
+    $suggestions[] = 'page__taxonomy__' . $taxonomy_vocabulary;
+  }
+  return $suggestions;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for Fields.
+ */
+function custom_theme_suggestions_field_alter(&$suggestions, $variables) {
+  $entity_suggestion = 'field__' . $variables['element']['#entity_type'];
+  array_splice($suggestions, 1, 0, $entity_suggestion);
+
+  // Add a suggestion field template for all the fields of a viewmode.
+  $suggestions[] = 'field__' . $variables['element']['#view_mode'];
+  // Add a suggestion for entity type and viewmode.
+  $suggestions[] = 'field__' . $variables['element']['#entity_type'] . '__' . $variables['element']['#view_mode'];
+  // Add a suggestion for entity type, viewmode and field.
+  $suggestions[] = 'field__' . $variables['element']['#entity_type'] . '__' . $variables['element']['#view_mode'] . '__' . $variables['element']['#field_name'];
+  // Add a suggestion for entity type, bundle, viewmode and field.
+  $suggestions[] = 'field__' . $variables['element']['#entity_type'] . '__' . $variables['element']['#bundle'] . '__' . $variables['element']['#view_mode'] . '__' . $variables['element']['#field_name'];
+}
