@@ -1,0 +1,3 @@
+# Basic template suggestions snippets for Drupal 8 theme.
+
+How to add template suggestions for Page and Fields depending on the node type, taxonomy, view modes...
